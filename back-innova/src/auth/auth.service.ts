@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entity/user.entity';
+import { ResponseRequest } from 'src/interfaces/Response.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,8 +31,8 @@ export class AuthService {
     };
   }
 
-  async register(user: User) {
-    const { data } = await this.userService.create(user);
+  async register(user: User): Promise<ResponseRequest<User>> {
+    const data = await this.userService.create(user);
     return data;
   }
 }
