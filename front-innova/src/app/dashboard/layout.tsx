@@ -24,12 +24,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const handleLogout = async () => {
     await signOut();
-    router.push("/login");
+    router.push("/");
   };
 
   return (
     <main className="h-screen w-screen">
-      <nav className="border-b-2 text-black flex justify-between text-white py-6 px-16">
+      <nav className="border-b-2 text-black flex justify-between py-6 px-16">
         <h1 className="text-2xl">Prueba Tecnica Fullstack</h1>
         <div>
           {isAdmin && (
@@ -42,13 +42,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </Link>
             </>
           )}
-          {user && (
-            <button onClick={handleLogout}>
-              <span className="mx-2" onClick={handleLogout}>
-                Cerrar sesion
-              </span>
-            </button>
-          )}
+          <button onClick={handleLogout}>
+            <span className="mx-2" onClick={handleLogout}>
+              Cerrar sesion
+            </span>
+          </button>
         </div>
       </nav>
 

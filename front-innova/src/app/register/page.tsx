@@ -1,6 +1,7 @@
 "use client";
 import { CustomForm, Field } from "@/components/CustmoForm";
 import { authService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 
@@ -11,7 +12,7 @@ export default function Page() {
     name: "",
     role: "",
   });
-  // const router = useRouter();
+  const router = useRouter();
 
   const handleSubmitCreateCustom = async () => {
     try {
@@ -31,6 +32,7 @@ export default function Page() {
           variant: 'success',
           autoHideDuration: 3000,
         });
+        router.push('/');
         return
       }
 
@@ -83,7 +85,7 @@ export default function Page() {
   ];
 
   return (
-    <div className="flex h-full w-full justify-center items-center">
+    <div className="flex h-full w-full justify-center items-center bg-gradient-to-tl from-[#BCDFFF]/40 from-70%">
       <div className="flex justify-around border shadow-lg rounded-lg px-4 py-8 bg-white m-2">
         <CustomForm
           fields={fields as Field[]}

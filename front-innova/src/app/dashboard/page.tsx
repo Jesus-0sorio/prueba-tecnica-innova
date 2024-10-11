@@ -18,7 +18,7 @@ const Page = () => {
   const router = useRouter();
 
   if (status === "unauthenticated") {
-    router.push("/login"); 
+    router.push("/"); 
     return null
   }
   
