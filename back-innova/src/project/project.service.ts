@@ -14,9 +14,15 @@ export class ProjectService {
   async findAll(): Promise<ResponseRequest<Project[] | null>> {
     try {
       const res = await this.projectRepository
-        .find()
+        .find({
+          relations: ['user'],
+          order: { id: 'ASC' },
+        })
         .then((projects: Project[]) => {
-          return projects;
+          return projects.map((project) => {
+            delete project.user.password;
+            return project;
+          });
         });
 
       if (res.length === 0) {

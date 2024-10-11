@@ -1,7 +1,8 @@
 export interface TaskDto {
+  id?: number;
   title: string;
   description: string;
   status: string;
-  user?: number;
-  project: number;
+  userId?: number;
+  projectId?: number;
 }

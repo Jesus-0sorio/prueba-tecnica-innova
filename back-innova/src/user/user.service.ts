@@ -11,10 +11,35 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async findAll(): Promise<ResponseRequest<User[]>> {
+  async findAll(): Promise<ResponseRequest<User[] | null>> {
+    try {
+      const res = await this.userRepository.find().then((users: User[]) => {
+        users.forEach((user: User) => delete user.password);
+        return users;
+      });
+
+      if (res.length === 0) {
+        return {
+          status: 404,
+          message: 'Users not found',
+          data: null,
+        };
+      }
+
+      return {
+        status: 200,
+        message: 'Users found',
+        data: res || [],
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async findUsersByRole(role: string): Promise<ResponseRequest<User[]>> {
     try {
       const res = await this.userRepository
-        .find()
+        .find({ where: { role } })
         .then((users: User[]) => {
           users.forEach((user: User) => delete user.password);
           return users;
@@ -124,7 +149,7 @@ export class UserService {
     try {
       await this.userRepository.delete(id);
       return {
-        status: 200,
+        status: 204,
         message: 'User removed',
         data: null,
       };

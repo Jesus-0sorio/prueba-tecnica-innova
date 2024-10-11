@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Task } from './entity/task.entity';
 import { ResponseRequest } from 'src/interfaces/Response.interface';
 import { TaskDto } from './dto/task.dto';
+import { Role } from 'src/auth/utils/role.enum';
 
 @Injectable()
 export class TaskService {
@@ -14,9 +15,14 @@ export class TaskService {
 
   public async findAll(): Promise<ResponseRequest<Task[] | null>> {
     try {
-      const res = await this.taskRepository.find().then((tasks: Task[]) => {
-        return tasks;
-      });
+      const res = await this.taskRepository
+        .find({
+          relations: ['project', 'user'],
+          order: { id: 'ASC' },
+        })
+        .then((tasks: Task[]) => {
+          return tasks;
+        });
 
       if (res.length === 0) {
         return {
@@ -40,7 +46,9 @@ export class TaskService {
     try {
       const res = await this.taskRepository
         .find({
-          where: { user: { id: user_id } },
+          where: { userId: user_id },
+          relations: ['project'],
+          order: { id: 'ASC' },
         })
         .then((tasks: Task[]) => {
           return tasks;
@@ -114,27 +122,14 @@ export class TaskService {
     }
   }
 
-  async create(task: TaskDto): Promise<ResponseRequest<Partial<Task>>> {
+  async create(task: TaskDto): Promise<ResponseRequest<Task>> {
     try {
-      const newTask = await this.taskRepository.create({
-        ...task,
-        user: { id: task.user },
-        project: { id: task.project },
-      });
-
-      const res = {
-        id: newTask.id,
-        name: newTask.name,
-        description: newTask.description,
-        status: newTask.status,
-        userId: newTask.userId,
-        projectId: newTask.projectId,
-      };
+      const newTask = await this.taskRepository.save(task);
 
       return {
         status: 201,
         message: 'Task created',
-        data: res,
+        data: newTask,
       };
     } catch (error) {
       throw new Error(error.message);
@@ -145,6 +140,7 @@ export class TaskService {
     id: number,
     task: Partial<TaskDto>,
     user_id: number,
+    user_role: string,
   ): Promise<ResponseRequest<Task | null>> {
     try {
       const pastTask = await this.taskRepository.findOne({
@@ -160,7 +156,7 @@ export class TaskService {
         };
       }
 
-      if (pastTask.userId !== user_id) {
+      if (pastTask.userId !== user_id && user_role !== Role.Admin) {
         return {
           status: 403,
           message: 'You do not have permission to update this task',
@@ -168,11 +164,7 @@ export class TaskService {
         };
       }
 
-      await this.taskRepository.update(id, {
-        ...task,
-        user: task.user ? { id: task.user } : undefined,
-        project: task.project ? { id: task.project } : undefined,
-      });
+      await this.taskRepository.update(id, task);
 
       const updatedTask = await this.taskRepository.findOne({
         where: { id },
@@ -188,7 +180,59 @@ export class TaskService {
     }
   }
 
-  async remove(id: number): Promise<ResponseRequest<null>> {
+  async updateVarious(
+    tasks: Partial<TaskDto>[],
+    user_id: number,
+    user_role: string,
+  ): Promise<ResponseRequest<Task[] | null>> {
+    try {
+      const tasksUpdated: Task[] = [];
+
+      for (const task of tasks) {
+        const pastTask = await this.taskRepository.findOne({
+          where: { id: task.id },
+        });
+
+        if (!pastTask) {
+          return {
+            status: 404,
+            message: 'Task not found',
+            data: null,
+          };
+        }
+
+        if (pastTask.userId !== user_id && user_role !== Role.Admin) {
+          return {
+            status: 403,
+            message: 'You do not have permission to update this task',
+            data: null,
+          };
+        }
+
+        await this.taskRepository.update(task.id, task);
+
+        const updatedTask = await this.taskRepository.findOne({
+          where: { id: task.id },
+        });
+
+        tasksUpdated.push(updatedTask);
+      }
+
+      return {
+        status: 200,
+        message: 'Tasks updated',
+        data: tasksUpdated,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async remove(
+    id: number,
+    user_id: number,
+    user_role: string,
+  ): Promise<ResponseRequest<null>> {
     try {
       const task = await this.taskRepository.findOne({ where: { id } });
 
@@ -200,11 +244,57 @@ export class TaskService {
         };
       }
 
+      if (task.userId !== user_id && user_role !== Role.Admin) {
+        return {
+          status: 403,
+          message: 'You do not have permission to remove this task',
+          data: null,
+        };
+      }
+
       await this.taskRepository.delete(id);
 
       return {
         status: 200,
         message: 'Task removed',
+        data: null,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async removeVarious(
+    ids: number[],
+    user_id: number,
+    user_role: string,
+  ): Promise<ResponseRequest<null>> {
+    try {
+      for (const id of ids) {
+        const task = await this.taskRepository.findOne({ where: { id } });
+
+        if (!task) {
+          return {
+            status: 404,
+            message: 'Task not found',
+            data: null,
+          };
+        }
+
+        if (task.userId !== user_id && user_role !== Role.Admin) {
+          return {
+            status: 403,
+            message: 'You do not have permission to remove this task',
+            data: null,
+          };
+        }
+
+        await this.taskRepository.delete(id);
+      }
+
+      return {
+        status: 200,
+        message: 'Tasks removed',
         data: null,
       };
     } catch (error) {
