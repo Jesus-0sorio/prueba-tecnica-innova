@@ -8,8 +8,8 @@ Esta aplicación web de gestión de proyectos permite a los usuarios crear y ges
 ## Tecnologías Utilizadas
 
 - **Frontend**: Next.js con Material-UI
-- **Backend**: NestJS (contenedorizado con Docker)
-- **Base de Datos**: PostgreSQL (contenedorizado con Docker)
+- **Backend**: NestJS (Dockerizado)
+- **Base de Datos**: PostgreSQL (Dockerizado)
 - **Autenticación**: JWT
 - **Docker**: Para contenerización del backend y la base de datos
 
