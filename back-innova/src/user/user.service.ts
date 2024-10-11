@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { compare, genSalt, hash } from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { ResponseRequest } from 'src/interfaces/Response.interface';
 
 @Injectable()
@@ -181,11 +181,11 @@ export class UserService {
   }
 
   async validatePassword(password: string, hash: string): Promise<boolean> {
-    return compare(password, hash);
+    return bcrypt.compare(password, hash);
   }
 
   private async encryptPassword(password: string): Promise<string> {
-    const salt = await genSalt();
-    return hash(password, salt);
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
   }
 }

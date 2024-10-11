@@ -12,6 +12,7 @@ import { User } from "@/interfaces/user/user.interface";
 import { projectService } from "@/services/project.service";
 import { userService } from "@/services/user.service";
 import { Create, Delete } from "@mui/icons-material";
+import { Box } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
@@ -217,14 +218,23 @@ const AdminProjectList = () => {
   return (
     <main className="h-full flex items-center justify-center">
       <div>
-        <div className="flex justify-end my-2">
+        <Box 
+          component="div"
+          sx={
+            {
+              display: "flex",
+              justifyContent: "end",
+              marginBottom: 2
+            }
+          }
+        >
           <CustomActionsButtons
             buttons={actionsButtons}
             spacing={2}
             direction="row"
             height={40}
           />
-        </div>
+        </Box>
         <CustomDataGrid
           columns={columns}
           rows={rows}

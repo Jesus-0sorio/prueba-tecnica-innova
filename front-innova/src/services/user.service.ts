@@ -42,27 +42,6 @@ export const userService = {
       return false;
     }
   },
-  createUser: async (user: User, token: string) => {
-    try {
-      const response = await fetch(endpoints.user.createUser, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(user),
-      });
-
-      if (response.status === 201) {
-        return response.json();
-      }
-
-      return false;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  },
   updateUser: async (user: User, token: string) => {
     try {
       const response = await fetch(endpoints.user.updateUser, {

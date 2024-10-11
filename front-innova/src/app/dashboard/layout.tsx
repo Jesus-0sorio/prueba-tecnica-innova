@@ -16,7 +16,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   if (status === "unauthenticated") {
-    router.push("/login");
+    router.push("/");
     return null;
   }
 

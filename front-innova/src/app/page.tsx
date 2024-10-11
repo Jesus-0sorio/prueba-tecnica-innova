@@ -31,6 +31,7 @@ const Home = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(process.env.JWT_SECRET);
 
     if (!validateForm()) {
       return;

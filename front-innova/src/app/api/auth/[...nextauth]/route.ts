@@ -12,7 +12,7 @@ interface User {
 }
 
 const authOptions: NextAuthOptions = {
-  secret: "secret",
+  secret: "secreto",
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -32,19 +32,22 @@ const authOptions: NextAuthOptions = {
       async authorize(credentials): Promise<User | null> {
         if (!credentials?.username || !credentials?.password) return null;
 
-
         const { username, password } = credentials;
 
         try {
           const res = await authService.login(username, password);
-          
+
           if (!res) {
             return res;
           }
           const { access_token } = res.data;
           // Decode the token from the response
           const jwtDecode = jwt.decode(access_token);
-          const { email, id, role } = jwtDecode as { email: string; id: string; role: string };
+          const { email, id, role } = jwtDecode as {
+            email: string;
+            id: string;
+            role: string;
+          };
           const user: User = {
             access_token,
             email,
@@ -61,7 +64,7 @@ const authOptions: NextAuthOptions = {
   ],
 
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
 
   callbacks: {

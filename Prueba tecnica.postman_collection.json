@@ -1,0 +1,536 @@
+{
+	"info": {
+		"_postman_id": "1d981896-5bf1-4528-b5e7-c984a7ceee05",
+		"name": "Prueba tecnica",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23595021"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"email\": \"h@h.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"P\",\r\n    \"email\": \"h@h.com\",\r\n    \"password\": \"1234\",\r\n    \"role\": \"usuario\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"P\",\r\n    \"email\": \"p@p.com\",\r\n    \"password\": \"1234\",\r\n    \"rol\": \"administrador\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NTc2NDYxLCJleHAiOjE3Mjg1ODE0NjF9.6J8TuVgT5GVR1nGKpPXAxapn6Q6aBMcS9-K3U33nOac",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJzdWIiOjYsInJvbGUiOiJ1c3VhcmlvIiwiaWF0IjoxNzI4NTc3MzQzLCJleHAiOjE3Mjg1ODIzNDN9.h4DLH5CAHwd1afi6whNtgcC1nra1NZvzG6FgDbOTiE4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rol\": \"usuario\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"9"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get Tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJzdWIiOjYsInJvbGUiOiJ1c3VhcmlvIiwiaWF0IjoxNzI4NjE4MTAwLCJleHAiOjE3Mjg2MjMxMDB9.YPA6hnvEXj8Qivv4dyB9JHT7M-7OTivzyozpfux2Wxo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJzdWIiOjYsInJvbCI6InVzZXIiLCJpYXQiOjE3Mjg0MjcyODAsImV4cCI6MTcyODQyNzM0MH0.vGO_1-2XTlFfT6fuykHNzk6HIYH3ZgDh7x2eCi9DhHA",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/tasks/my",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks",
+								"my"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get TasksByProject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NjE4NjUyLCJleHAiOjE3Mjg2MjM2NTJ9.M6WhXmghiXcIYF_i-l_ekf8M7jdZaqDC0KFRBl0JI_Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJzdWIiOjYsInJvbCI6InVzZXIiLCJpYXQiOjE3Mjg0MjcyODAsImV4cCI6MTcyODQyNzM0MH0.vGO_1-2XTlFfT6fuykHNzk6HIYH3ZgDh7x2eCi9DhHA",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/tasks?project_id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "project_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NjI5MjQyLCJleHAiOjE3Mjg2MzQyNDJ9.ci6AlYv0qWmvooQhx_KbwVe3HoH1tIJRqdaOCkHBuqg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJzdWIiOjYsInJvbCI6InVzZXIiLCJpYXQiOjE3Mjg0MjcyODAsImV4cCI6MTcyODQyNzM0MH0.vGO_1-2XTlFfT6fuykHNzk6HIYH3ZgDh7x2eCi9DhHA",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"project1aaaa\",\r\n    \"description\": \"descriptionaaa\",\r\n    \"status\": \"En Proceso\",\r\n    \"projectId\": 4,\r\n    \"userId\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NjE4NjUyLCJleHAiOjE3Mjg2MjM2NTJ9.M6WhXmghiXcIYF_i-l_ekf8M7jdZaqDC0KFRBl0JI_Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAYS5jb20iLCJzdWIiOjYsInJvbCI6InVzZXIiLCJpYXQiOjE3Mjg0MjcyODAsImV4cCI6MTcyODQyNzM0MH0.vGO_1-2XTlFfT6fuykHNzk6HIYH3ZgDh7x2eCi9DhHA",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 6,\r\n    \"projectId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/tasks/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Get Projects by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NjE4NjUyLCJleHAiOjE3Mjg2MjM2NTJ9.M6WhXmghiXcIYF_i-l_ekf8M7jdZaqDC0KFRBl0JI_Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Projects",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NjIzMDM2LCJleHAiOjE3Mjg2MjgwMzZ9.EmGGstBgXoxi55QJSkvNgpaGJtk4o9_P7dZOvjwIYbA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Projects",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NjE4NjUyLCJleHAiOjE3Mjg2MjM2NTJ9.M6WhXmghiXcIYF_i-l_ekf8M7jdZaqDC0KFRBl0JI_Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"nuevo\",\r\n    \"description\": \"description\",\r\n    \"initial_date\": \"10/9/2024\",\r\n    \"final_date\": \"10/19/2024\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NTc2NDYxLCJleHAiOjE3Mjg1ODE0NjF9.6J8TuVgT5GVR1nGKpPXAxapn6Q6aBMcS9-K3U33nOac",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"project\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBAcC5jb20iLCJzdWIiOjcsInJvbGUiOiJhZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzI4NTc2NDYxLCJleHAiOjE3Mjg1ODE0NjF9.6J8TuVgT5GVR1nGKpPXAxapn6Q6aBMcS9-K3U33nOac",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

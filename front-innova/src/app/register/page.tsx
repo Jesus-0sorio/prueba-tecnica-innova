@@ -1,6 +1,7 @@
 "use client";
 import { CustomForm, Field } from "@/components/CustmoForm";
 import { authService } from "@/services/auth.service";
+import { Link, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
@@ -87,13 +88,21 @@ export default function Page() {
   return (
     <div className="flex h-full w-full justify-center items-center bg-gradient-to-tl from-[#BCDFFF]/40 from-70%">
       <div className="flex justify-around border shadow-lg rounded-lg px-4 py-8 bg-white m-2">
-        <CustomForm
-          fields={fields as Field[]}
-          title="Registrarse"
-          textButton={"Registrate"}
-          handleSubmitCreateCustom={handleSubmitCreateCustom}
-          isValidCloseIcon={false}
-        />
+        <div>
+          <CustomForm
+            fields={fields as Field[]}
+            title="Registrarse"
+            textButton={"Registrate"}
+            handleSubmitCreateCustom={handleSubmitCreateCustom}
+            isValidCloseIcon={false}
+          />
+          <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+            ¿Ya tienes una cuenta?{" "}
+            <Link href="/" underline="hover">
+              Inicia sesión
+            </Link>
+          </Typography>
+        </div>
       </div>
     </div>
   );
