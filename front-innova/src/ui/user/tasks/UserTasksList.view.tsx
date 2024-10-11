@@ -8,9 +8,10 @@ import { Row } from "@/interfaces/components/customDataGrid.interface";
 import { Task } from "@/interfaces/task/task.interface";
 import { taskService } from "@/services/task.service";
 import { Delete, Update } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Box, MenuItem, Select } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useSession } from "next-auth/react";
+import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 
 const statusClasses = {
@@ -59,7 +60,10 @@ const UserTaskList = () => {
         project: task.project?.name || "",
       }));
       setRows(formattedTasks);
+      handleToast("Tareas cargadas correctamente", "success");
+      return;
     }
+    handleToast("Error al cargar las tareas", "error");
   };
 
   const handleUpdateTasks = async () => {
@@ -74,6 +78,25 @@ const UserTaskList = () => {
       .filter((task): task is Task => task !== null);
 
     const response = await taskService.updateVariousTasks(updatedTasks, token);
+    handleToast(
+      response ? "Estado actualizado correctamente" : "Error al actualizar",
+      response ? "success" : "error"
+    );
+    if (response) handleGetTasks();
+  };
+
+  const handleUpdateTask = async (id: number, newStatus: string) => {
+    if (!token) return;
+    const response = await taskService.updateTask(
+      { id, status: newStatus },
+      token
+    );
+
+    handleToast(
+      response ? "Estado actualizado correctamente" : "Error al actualizar",
+      response ? "success" : "error"
+    );
+
     if (response) handleGetTasks();
   };
 
@@ -82,6 +105,7 @@ const UserTaskList = () => {
     await taskService.DeleteVariousTasks(selectedRows, token);
     handleGetTasks();
     setSelectedRows([]);
+    handleToast("Tareas eliminadas correctamente", "success");
   };
 
   const actionsButtons: ButtonProps[] = [
@@ -105,6 +129,48 @@ const UserTaskList = () => {
     if (token) handleGetTasks();
   }, [token]);
 
+  const addStatusSelectToColumns = (
+    columns: GridColDef[],
+    onStatusChange: (id: number, newStatus: string) => void
+  ): GridColDef[] => {
+    return columns.map((col) => {
+      if (col.field === "status") {
+        return {
+          ...col,
+          renderCell: (params) => (
+            <Select
+              value={params.value}
+              variant="standard"
+              className="border-none outline-none ring-0 focus:ring-0 selection:border-none"
+              onChange={(e) =>
+                onStatusChange(params.row.id, e.target.value as string)
+              }
+              fullWidth
+            >
+              <MenuItem value="Pendiente">Pendiente</MenuItem>
+              <MenuItem value="En Proceso">En Proceso</MenuItem>
+              <MenuItem value="Completada">Completada</MenuItem>
+            </Select>
+          ),
+        };
+      }
+      return col;
+    });
+  };
+
+  const handleStatusChange = (id: number, newStatus: string) => {
+    handleUpdateTask(id, newStatus);
+
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id === id ? { ...row, status: newStatus } : row
+      )
+    );
+  };
+  const handleToast = (message: string, type: "success" | "error") => {
+    enqueueSnackbar(message, { variant: type, autoHideDuration: 3000 });
+  };
+
   return (
     <main className="h-full flex items-center justify-center">
       <div>
@@ -121,7 +187,10 @@ const UserTaskList = () => {
             onChange={(e) => setStatusSelect(e.target.value)}
             options={optionsSelect}
             variant="standard"
-            label="Estado"
+            label="Seleccione el nuevo estado"
+            styles={{
+              width: "250px",
+            }}
           />
           <CustomActionsButtons
             buttons={actionsButtons}
@@ -132,7 +201,7 @@ const UserTaskList = () => {
         </Box>
         <CustomDataGrid
           rows={rows}
-          columns={columns}
+          columns={addStatusSelectToColumns(columns, handleStatusChange)}
           pageSizeOptions={[5, 10, 15, 25]}
           onSelectionChange={setSelectedRows}
           selectType="multiple"

@@ -4,7 +4,6 @@ import { endpoints } from "@/utils/api.config";
 export const projectService = {
   getProjects: async (token: string) => {
     try {
-      console.log("token", token);
       const response = await fetch(endpoints.project.getProjects, {
         method: "GET",
         headers: {

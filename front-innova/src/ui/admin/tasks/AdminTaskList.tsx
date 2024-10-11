@@ -3,7 +3,6 @@ import { CustomForm, Field } from "@/components/CustmoForm";
 import CustomActionsButtons from "@/components/CustomActionsButtons";
 import CustomDataGrid from "@/components/CustomDataGrid";
 import CustomModal from "@/components/CustomModal";
-import CustomSelect from "@/components/CustomSelect";
 import { Session } from "@/interfaces/auth/auth.interface";
 import { ButtonProps } from "@/interfaces/components/customActionsButtons.interface";
 import { Row } from "@/interfaces/components/customDataGrid.interface";
@@ -13,8 +12,8 @@ import { User } from "@/interfaces/user/user.interface";
 import { projectService } from "@/services/project.service";
 import { taskService } from "@/services/task.service";
 import { userService } from "@/services/user.service";
-import { Create, Delete, Update } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Create, Delete } from "@mui/icons-material";
+import { Box, MenuItem, Select } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useSession } from "next-auth/react";
 import { enqueueSnackbar } from "notistack";
@@ -28,31 +27,34 @@ const columns: GridColDef[] = [
     field: "status",
     headerName: "Estado",
     width: 160,
-    cellClassName: (params) => {
-      const statusClasses = {
-        Pendiente: "bg-red-500 text-white text-center",
-        Completada: "bg-green-500 text-white text-center",
-        "En Proceso": "bg-yellow-500 text-white text-center",
-      };
-      const value = params.value as string;
-      return statusClasses[value as keyof typeof statusClasses] || "";
-    },
+    renderCell: (params) => (
+      <Box
+        sx={{
+          backgroundColor:
+            params.value === "Pendiente"
+              ? "#f87171"
+              : params.value === "Completada"
+              ? "#4ade80"
+              : "#facc15",
+          color: "#000",
+          textAlign: "center",
+          width: "100%",
+          borderRadius: "4px",
+          padding: "4px",
+        }}
+      >
+        {params.value}
+      </Box>
+    ),
   },
   { field: "user", headerName: "Usuario asignado", width: 140 },
   { field: "project", headerName: "Proyecto", width: 140 },
 ];
 
-const optionsSelect = [
-  { value: "", label: "Todos" },
-  { value: "Pendiente", label: "Pendiente" },
-  { value: "En Proceso", label: "En Proceso" },
-  { value: "Completada", label: "Completada" },
-];
 
 const AdminTaskList = () => {
   const { data: session } = useSession() as unknown as Session;
   const [rows, setRows] = useState<Row[]>([]);
-  const [statusSelect, setStatusSelect] = useState<string>("");
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [formData, setFormData] = useState<Partial<Task>>({
@@ -75,13 +77,16 @@ const AdminTaskList = () => {
     if (!token) return;
     const response = await taskService.getTasks(token);
     if (response) {
-      const formattedTasks = response.data.map((task: Task) => ({
-        ...task,
-        project: task.project?.name || "",
-        user: task.user?.name || "",
-      }));
+      const formattedTasks =
+        response?.data?.map((task: Task) => ({
+          ...task,
+          project: task.project?.name || "",
+          user: task.user?.name || "",
+        })) || [];
       setRows(formattedTasks);
+
       handleToast("Tareas cargadas correctamente", "success");
+      return;
     }
     handleToast("Error al cargar las tareas", "error");
   };
@@ -91,10 +96,10 @@ const AdminTaskList = () => {
     const response = await userService.getUsersByRole("usuario", token);
     if (response) {
       setUserOptions(
-        response.data.map((user: User) => ({
+        response?.data?.map((user: User) => ({
           value: user.id,
           label: user.name,
-        }))
+        })) || []
       );
       return handleToast("Usuarios cargados correctamente", "success");
     }
@@ -106,35 +111,30 @@ const AdminTaskList = () => {
     const response = await projectService.getProjects(token);
     if (response) {
       setProjectOptions(
-        response.data.map((project: Project) => ({
+        response?.data?.map((project: Project) => ({
           value: project.id,
           label: project.name,
-        }))
+        })) || []
       );
       return handleToast("Proyectos cargados correctamente", "success");
     }
     return handleToast("Error al cargar los proyectos", "error");
   };
 
-  const handleUpdateTasks = async () => {
-    if (!statusSelect || selectedRows.length === 0 || !token) return;
-
-    const updatedTasks = selectedRows
-      .map((id) => {
-        const task = rows.find((row) => row.id === id);
-        if (!task) return null;
-        return { ...task, status: statusSelect } as Task;
-      })
-      .filter((task): task is Task => task !== null);
-
-    const response = await taskService.updateVariousTasks(updatedTasks, token);
+  const handleUpdateTasks = async (id: number, newStatus: string) => {
+    if (!token) return;
+    const response = await taskService.updateTask(
+      {
+        id,
+        status: newStatus,
+      },
+      token
+    );
     if (response) {
-      handleToast("Tareas actualizadas correctamente", "success");
-      handleGetTasks();
-      setSelectedRows([]);
-      return;
+      handleToast("Estado actualizado correctamente", "success");
+      return handleGetTasks();
     }
-    handleToast("Error al actualizar las tareas", "error");
+    return handleToast("Error al actualizar el estado", "error");
   };
 
   const handleDeleteTasks = async () => {
@@ -184,13 +184,6 @@ const AdminTaskList = () => {
       variant: "contained",
       onClick: handleOpenModal,
       buttonText: "Crear Tarea",
-    },
-    {
-      startIcon: <Update />,
-      color: "primary",
-      variant: "contained",
-      onClick: handleUpdateTasks,
-      buttonText: "Actualizar Estado",
     },
     {
       startIcon: <Delete />,
@@ -251,24 +244,68 @@ const AdminTaskList = () => {
     },
   ];
 
+  const addStatusSelectToColumns = (
+    columns: GridColDef[],
+    onStatusChange: (id: number, newStatus: string) => void
+  ): GridColDef[] => {
+    return columns.map((col) => {
+      if (col.field === "status") {
+        return {
+          ...col,
+          renderCell: (params) => (
+            <Select
+              value={params.value}
+              variant="standard"
+              className="border-none outline-none ring-0 focus:ring-0 selection:border-none"
+              onChange={(e) =>
+                onStatusChange(params.row.id, e.target.value as string)
+              }
+              fullWidth
+            >
+              <MenuItem
+                value="Pendiente"
+              >
+                Pendiente
+              </MenuItem>
+              <MenuItem
+                value="En Proceso"
+              >
+                En Proceso
+              </MenuItem>
+              <MenuItem
+                value="Completada"
+              >
+                Completada
+              </MenuItem>
+            </Select>
+          ),
+        };
+      }
+      return col;
+    });
+  };
+
+  const handleStatusChange = (id: number, newStatus: string) => {
+    handleUpdateTasks(id, newStatus);
+
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id === id ? { ...row, status: newStatus } : row
+      )
+    );
+  };
+
   return (
-    <main className="h-full flex items-center justify-center">
+    <main className="h-full overflow-hidden flex items-center justify-center">
       <div>
         <Box
           component="div"
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "end",
             paddingBlock: "5px",
           }}
         >
-          <CustomSelect
-            value={statusSelect}
-            onChange={(e) => setStatusSelect(e.target.value)}
-            options={optionsSelect}
-            variant="standard"
-            label="Estado"
-          />
           <CustomActionsButtons
             buttons={actionsButtons}
             spacing={2}
@@ -278,7 +315,7 @@ const AdminTaskList = () => {
         </Box>
         <CustomDataGrid
           rows={rows}
-          columns={columns}
+          columns={addStatusSelectToColumns(columns, handleStatusChange)}
           pageSizeOptions={[5, 10, 15, 25]}
           onSelectionChange={setSelectedRows}
           selectType="single"

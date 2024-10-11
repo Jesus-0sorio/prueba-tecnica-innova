@@ -1,5 +1,6 @@
 import { Provider as ProviderMui } from "@/store/Mui/Provider";
 import { Provider } from "@/store/NextAuth/provider";
+import { Provider as ProviderTailwind } from "@/store/Tailwind/Provider";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
@@ -27,9 +28,11 @@ export default function RootLayout({
         className={`${roboto.variable} w-screen h-screen`}
         suppressHydrationWarning
       >
-        <ProviderMui>
-          <Provider>{children}</Provider>
-        </ProviderMui>
+        <ProviderTailwind>
+          <ProviderMui>
+            <Provider>{children}</Provider>
+          </ProviderMui>
+        </ProviderTailwind>
       </body>
     </html>
   );

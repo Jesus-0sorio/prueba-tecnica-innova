@@ -29,7 +29,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main className="h-screen w-screen">
-      <nav className="border-b-2 text-black flex justify-between py-6 px-16">
+      <nav className="border-b-2 text-black flex justify-between py-6 px-16 absolute w-full">
         <h1 className="text-2xl">Prueba Tecnica Fullstack</h1>
         <div>
           {isAdmin && (

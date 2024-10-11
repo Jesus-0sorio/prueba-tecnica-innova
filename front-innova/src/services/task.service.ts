@@ -62,7 +62,7 @@ export const taskService = {
       return false;
     }
   },
-  updateTask: async (task: Task, token: string) => {
+  updateTask: async (task: Partial<Task>, token: string) => {
     try {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);

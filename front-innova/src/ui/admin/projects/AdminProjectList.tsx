@@ -63,10 +63,10 @@ const AdminProjectList = () => {
     if (!token) return;
     const response = await projectService.getProjects(token);
     if (response) {
-      const formattedProjects = response.data.map((project: Project) => ({
+      const formattedProjects = response?.data?.map((project: Project) => ({
         ...project,
         user: project.user?.name || "",
-      }));
+      })) || [];
       setRows(formattedProjects);
     }
   };
